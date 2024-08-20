@@ -16,7 +16,8 @@ import {
   setMarkdown$,
   topAreaChildren$,
   useTranslation,
-  viewMode$
+  viewMode$,
+  bottomAreaChildren$
 } from './plugins/core'
 
 import { ContentEditable } from '@lexical/react/LexicalContentEditable.js'
@@ -44,12 +45,13 @@ const LexicalProvider: React.FC<{
 
 const RichTextEditor: React.FC = () => {
   const t = useTranslation()
-  const [contentEditableClassName, composerChildren, topAreaChildren, editorWrappers, placeholder] = useCellValues(
+  const [contentEditableClassName, composerChildren, topAreaChildren, editorWrappers, placeholder, bottomAreaChildren] = useCellValues(
     contentEditableClassName$,
     composerChildren$,
     topAreaChildren$,
     editorWrappers$,
-    placeholder$
+    placeholder$,
+    bottomAreaChildren$,
   )
   return (
     <>
@@ -75,6 +77,9 @@ const RichTextEditor: React.FC = () => {
         </div>
       </RenderRecursiveWrappers>
       {composerChildren.map((Child, index) => (
+        <Child key={index} />
+      ))}
+      {bottomAreaChildren.map((Child, index) => (
         <Child key={index} />
       ))}
     </>

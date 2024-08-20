@@ -32,7 +32,7 @@ import tableMarkdown from './assets/table.md?raw'
 
 import { virtuosoSampleSandpackConfig } from './_boilerplate'
 
-const helloMarkdown = `Hello <u>world am **here**</u> more <u>under</u> line. Some \`code with backticks\` and <code>code tag</code> `
+const helloMarkdown = `FIXME Hello <u>world am **here**</u> more <u>under</u> line. Some \`code with backticks\` and <code>code tag</code> `
 
 export function Bare() {
   const ref = React.useRef<MDXEditorMethods>(null)
@@ -59,7 +59,7 @@ export function Code() {
         autoFocus={true}
         ref={ref}
         markdown={`
-backticks
+hello world asdasdf backticks
 **\`hello\` world**
 
 tag
@@ -364,6 +364,7 @@ export function ConditionalRendering() {
           markdown="# Hello world"
           plugins={[
             toolbarPlugin({
+              location: 'bottom',
               toolbarContents: () => (
                 <>
                   <UndoRedo />

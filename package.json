@@ -1,5 +1,5 @@
 {
-  "name": "@mdxeditor/editor",
+  "name": "commonwealth-editor",
   "author": "Petyo Ivanov",
   "homepage": "https://mdxeditor.dev/",
   "bugs": {
@@ -11,7 +11,7 @@
     "*.css"
   ],
   "type": "module",
-  "version": "0.0.0-development",
+  "version": "0.0.2",
   "description": "React component for rich text markdown editing",
   "scripts": {
     "build": "vite build",

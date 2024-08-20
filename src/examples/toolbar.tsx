@@ -33,6 +33,7 @@ import kitchenSinkMarkdown from './assets/kitchen-sink.md?raw'
 import './dark-editor.css'
 import { basicDark } from 'cm6-theme-basic-dark'
 import type { Story } from '@ladle/react'
+import i18next from 'i18next'
 
 export const Basics = () => {
   return <MDXEditor markdown={kitchenSinkMarkdown} plugins={ALL_PLUGINS} />
@@ -82,34 +83,38 @@ export const CustomTheming = () => {
 }
 
 export const ConditionalToolbar = () => {
-  const [outsideState, setOutsideState] = React.useState('foo')
   return (
     <>
-      <button
-        onClick={() => {
-          setOutsideState('bar')
-        }}
-      >
-        Toggle outside state
-      </button>
-      {outsideState}
       <MDXEditor
         markdown={'hello world'}
+        translation={(key, defaultValue, interpolations) => {
+          console.log(`${key}=${defaultValue}`)
+          switch (key) {
+            case 'toolbar.blockTypeSelect.placeholder':
+              return 'H1'
+            case 'toolbar.blockTypes.heading':
+              return 'P'
+            case 'toolbar.blockTypes.paragraph':
+              return 'P'
+            default:
+              return defaultValue
+          }
+        }}
         plugins={[
           toolbarPlugin({
+            location: 'bottom',
             toolbarContents: () => (
               <>
-                <DiffSourceToggleWrapper>
-                  {outsideState}
-                  <UndoRedo />
-                  <BoldItalicUnderlineToggles />
-                  <ListsToggle />
-                  <Separator />
-                  <BlockTypeSelect />
-                  <CreateLink />
-                  <InsertImage />
-                  <Separator />
-                </DiffSourceToggleWrapper>
+                {/*<BlockTypeSelect />*/}
+                {/*<UndoRedo />*/}
+                <BoldItalicUnderlineToggles />
+                <CreateLink />
+                <ListsToggle />
+                <Separator />
+                <InsertImage />
+                <div style={{ justifyContent: 'flex-end', flexGrow: 1, display: 'flex' }}>
+                  <button>Go</button>
+                </div>
               </>
             )
           }),
