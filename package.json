@@ -11,13 +11,14 @@
     "*.css"
   ],
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React component for rich text markdown editing",
   "scripts": {
     "build": "vite build",
     "build:docs:api": "typedoc",
     "start": "LADLE=true ladle dev",
     "dev": "LADLE=true ladle dev",
+    "ladle-build": "LADLE=true ladle build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "NODE_ENV=development vitest",
