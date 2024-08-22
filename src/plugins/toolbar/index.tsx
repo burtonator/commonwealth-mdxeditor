@@ -21,6 +21,12 @@ type ToolbarPluginProps = Readonly<{
    * Where to place the toolbar (top or bottom of editor)
    */
   location?: 'top' | 'bottom'
+
+  /**
+   * Define custom CSS properties
+   */
+  style?: React.CSSProperties
+
 }>
 
 /**
@@ -32,10 +38,10 @@ export const toolbarPlugin = realmPlugin<ToolbarPluginProps>({
     realm.pubIn({
       [toolbarContents$]: params?.toolbarContents ?? DEFAULT_TOOLBAR_CONTENTS,
       [addTopAreaChild$]: () => {
-        return params?.location === undefined || params.location === 'top' ? <ToolbarBody/> : null
+        return params?.location === undefined || params.location === 'top' ? <ToolbarBody {...params}/> : null
       },
       [addBottomAreaChild$]: () => {
-        return params?.location === 'bottom' ? <ToolbarBody/> : null
+        return params?.location === 'bottom' ? <ToolbarBody {...params}/> : null
       }
     })
   },
@@ -44,7 +50,9 @@ export const toolbarPlugin = realmPlugin<ToolbarPluginProps>({
   }
 })
 
-const ToolbarBody = () => {
+type ToolbarBodyProps = Pick<ToolbarPluginProps, 'style'>
+
+const ToolbarBody = (props: ToolbarBodyProps) => {
   const [toolbarContents, readOnly] = useCellValues(toolbarContents$, readOnly$)
-  return <Root readOnly={readOnly}>{toolbarContents()}</Root>
+  return <Root readOnly={readOnly} {...props}>{toolbarContents()}</Root>
 }

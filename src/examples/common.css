@@ -1,0 +1,20 @@
+html, body {
+    display: flex;
+    flex-grow: 1;
+}
+
+#root, .frame-content {
+    /*height: 100vh*/
+    flex-grow: 1;
+    display: flex;
+}
+
+.mdxeditor {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.mdxeditor-diff-source-wrapper {
+    flex-grow: 1;
+}

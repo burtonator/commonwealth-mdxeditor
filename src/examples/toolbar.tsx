@@ -35,6 +35,8 @@ import { basicDark } from 'cm6-theme-basic-dark'
 import type { Story } from '@ladle/react'
 import i18next from 'i18next'
 
+import "./common.css"
+
 export const Basics = () => {
   return <MDXEditor markdown={kitchenSinkMarkdown} plugins={ALL_PLUGINS} />
 }
@@ -50,6 +52,69 @@ ReadOnly.argTypes = {
     defaultValue: true,
     control: { type: 'boolean' }
   }
+}
+
+
+export const CommonMobileToolbar = () => {
+  return (
+    <>
+      <MDXEditor
+        markdown={'hello world'}
+        translation={(key, defaultValue, interpolations) => {
+          console.log(`${key}=${defaultValue}`)
+          switch (key) {
+            case 'toolbar.blockTypeSelect.placeholder':
+              return 'H1'
+            case 'toolbar.blockTypes.heading':
+              return 'P'
+            case 'toolbar.blockTypes.paragraph':
+              return 'P'
+            default:
+              return defaultValue
+          }
+        }}
+        plugins={[
+          toolbarPlugin({
+            location: 'bottom',
+            style: {
+              borderTop: 'solid #c6c6c6 1px',
+              borderRadius: 'inherit',
+              backgroundColor: 'inherit'
+            },
+            toolbarContents: () => (
+              <>
+                {/*<BlockTypeSelect />*/}
+                {/*<UndoRedo />*/}
+                <BoldItalicUnderlineToggles />
+                <CreateLink />
+                <ListsToggle />
+                <Separator />
+                <InsertImage />
+                <div style={{ justifyContent: 'flex-end', flexGrow: 1, display: 'flex' }}>
+                  <button>➤</button>
+                </div>
+              </>
+            )
+          }),
+          listsPlugin(),
+          quotePlugin(),
+          headingsPlugin(),
+          linkPlugin(),
+          linkDialogPlugin(),
+          imagePlugin(),
+          tablePlugin(),
+          thematicBreakPlugin(),
+          frontmatterPlugin(),
+          // codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
+          // sandpackPlugin({ sandpackConfig: virtuosoSampleSandpackConfig }),
+          // codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text' } }),
+          directivesPlugin({ directiveDescriptors: [YoutubeDirectiveDescriptor, AdmonitionDirectiveDescriptor] }),
+          diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
+          markdownShortcutPlugin()
+        ]}
+      />
+    </>
+  )
 }
 
 export const CustomTheming = () => {
@@ -81,6 +146,7 @@ export const CustomTheming = () => {
     />
   )
 }
+
 
 export const ConditionalToolbar = () => {
   return (
