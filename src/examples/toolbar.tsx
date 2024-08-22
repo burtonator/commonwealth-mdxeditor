@@ -35,7 +35,7 @@ import { basicDark } from 'cm6-theme-basic-dark'
 import type { Story } from '@ladle/react'
 import i18next from 'i18next'
 
-import "./common.css"
+import './common.css'
 
 export const Basics = () => {
   return <MDXEditor markdown={kitchenSinkMarkdown} plugins={ALL_PLUGINS} />
@@ -54,7 +54,6 @@ ReadOnly.argTypes = {
   }
 }
 
-
 export const CommonMobileToolbar = () => {
   return (
     <>
@@ -64,9 +63,19 @@ export const CommonMobileToolbar = () => {
           console.log(`${key}=${defaultValue}`)
           switch (key) {
             case 'toolbar.blockTypeSelect.placeholder':
+              // show the default placeholder that's active here..
               return 'H1'
             case 'toolbar.blockTypes.heading':
-              return 'P'
+              console.log('FIXME: ', { key, defaultValue, interpolations })
+
+              if (interpolations?.level) {
+                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                return 'H' + interpolations.level
+              }
+
+              return 'H1'
+            case 'toolbar.blockTypes.quote':
+              return 'Q'
             case 'toolbar.blockTypes.paragraph':
               return 'P'
             default:
@@ -148,7 +157,6 @@ export const CustomTheming = () => {
     />
   )
 }
-
 
 export const ConditionalToolbar = () => {
   return (
