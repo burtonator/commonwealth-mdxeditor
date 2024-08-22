@@ -28,3 +28,7 @@ html, body {
 .mdxeditor-diff-source-wrapper {
     flex-grow: 1;
 }
+
+.mdxeditor-block-type-select button {
+    width: 75px;
+}
