@@ -3,8 +3,18 @@ html, body {
     flex-grow: 1;
 }
 
+.ladle-resize-handle,
+.ladle-aside {
+    display: none
+}
+
+#ladle-root {
+    flex-grow: 1;
+    display: flex;
+}
+
 #root, .frame-content {
-    /*height: 100vh*/
+    height: 100vh;
     flex-grow: 1;
     display: flex;
 }
