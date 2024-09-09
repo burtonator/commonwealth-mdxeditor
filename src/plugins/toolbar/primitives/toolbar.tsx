@@ -86,9 +86,6 @@ export const SingleToggleGroup = decorateWithRef(RadixToolbar.ToggleGroup, {
   className: styles.toolbarToggleSingleGroup
 })
 
-/**
- * @internal
- */
 export const ToggleSingleGroupWithItem = React.forwardRef<
   HTMLDivElement,
   Omit<RadixToolbar.ToolbarToggleGroupSingleProps, 'type'> & { on: boolean; title: string; disabled?: boolean }

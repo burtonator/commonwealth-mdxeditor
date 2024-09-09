@@ -118,3 +118,5 @@ export * from './utils/voidEmitter'
 export * from './RealmWithPlugins'
 
 export * from './FormatConstants'
+
+export { ToggleSingleGroupWithItem } from './plugins/toolbar/primitives/toolbar'
