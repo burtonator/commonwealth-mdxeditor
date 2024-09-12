@@ -87,37 +87,42 @@ export const CodeMirrorEditor = ({ language, nodeKey, code, focusEmitter }: Code
         e.stopPropagation()
       }}
     >
-      <div className={styles.codeMirrorToolbar}>
-        <Select
-          value={language}
-          onChange={(language) => {
-            parentEditor.update(() => {
-              lexicalNode.setLanguage(language === EMPTY_VALUE ? '' : language)
-              setTimeout(() => {
-                parentEditor.update(() => {
-                  lexicalNode.getLatest().select()
+      {!readOnly && (
+        <div className={styles.codeMirrorToolbar}>
+          <Select
+            value={language}
+            onChange={(language) => {
+              parentEditor.update(() => {
+                lexicalNode.setLanguage(language === EMPTY_VALUE ? '' : language)
+                setTimeout(() => {
+                  parentEditor.update(() => {
+                    lexicalNode.getLatest().select()
+                  })
                 })
               })
-            })
-          }}
-          triggerTitle={t('codeBlock.selectLanguage', 'Select code block language')}
-          placeholder={t('codeBlock.inlineLanguage', 'Language')}
-          items={Object.entries(codeBlockLanguages).map(([value, label]) => ({ value: value ? value : EMPTY_VALUE, label }))}
-        />
-        <button
-          className={styles.iconButton}
-          type="button"
-          title={t('codeblock.delete', 'Delete code block')}
-          onClick={(e) => {
-            e.preventDefault()
-            parentEditor.update(() => {
-              lexicalNode.remove()
-            })
-          }}
-        >
-          {iconComponentFor('delete_small')}
-        </button>
-      </div>
+            }}
+            triggerTitle={t('codeBlock.selectLanguage', 'Select code block language')}
+            placeholder={t('codeBlock.inlineLanguage', 'Language')}
+            items={Object.entries(codeBlockLanguages).map(([value, label]) => ({
+              value: value ? value : EMPTY_VALUE,
+              label
+            }))}
+          />
+          <button
+            className={styles.iconButton}
+            type="button"
+            title={t('codeblock.delete', 'Delete code block')}
+            onClick={(e) => {
+              e.preventDefault()
+              parentEditor.update(() => {
+                lexicalNode.remove()
+              })
+            }}
+          >
+            {iconComponentFor('delete_small')}
+          </button>
+        </div>
+      )}
       <div ref={elRef} />
     </div>
   )

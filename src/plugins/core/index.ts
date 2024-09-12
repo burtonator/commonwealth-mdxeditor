@@ -242,7 +242,6 @@ export const importVisitors$ = Cell<MdastImportVisitor<Mdast.Nodes>[]>([])
  */
 export const usedLexicalNodes$ = Cell<Klass<LexicalNode>[]>([])
 export const syntaxExtensions$ = Cell<MarkdownParseOptions['syntaxExtensions']>([])
-/** @internal */
 export const mdastExtensions$ = Cell<NonNullable<MarkdownParseOptions['mdastExtensions']>>([])
 
 // export configuration
