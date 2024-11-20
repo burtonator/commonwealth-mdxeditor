@@ -46,11 +46,11 @@ type RootProps = Readonly<{
 /**
  * @internal
  */
-export const Root: React.FC<RootProps> = ({ readOnly, children, style }) => {
+export const Root: React.FC<RootProps> = ({ readOnly, children, className, style }) => {
   return (
     <RadixToolbar.Root
       style={style}
-      className={classNames('mdxeditor-toolbar', styles.toolbarRoot, { [styles.readOnlyToolbarRoot]: readOnly })}
+      className={classNames('mdxeditor-toolbar', styles.toolbarRoot, { [styles.readOnlyToolbarRoot]: readOnly }, className)}
       {...(readOnly ? { tabIndex: -1 } : {})}
     >
       {children}

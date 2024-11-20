@@ -5,5 +5,13 @@ A paragraph with inline jsx component <MyLeaf foo="fooValue">Meh more _Leaf_</My
 <BlockNode foo="fooValue">
   Content *foo*
 
-  more Content
+more Content
 </BlockNode>
+
+something more.
+
+<UnknownJsxNode>What</UnknownJsxNode>
+
+<MyLeaf foo="fooValue">Some content</MyLeaf>
+
+<MyLeaf foo="fooValue" />

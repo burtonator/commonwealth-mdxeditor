@@ -9,17 +9,16 @@ import {
   $getRoot,
   $getSelection,
   $insertNodes,
-  $isDecoratorNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
   $setSelection,
   BLUR_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   DecoratorNode,
+  EditorThemeClasses,
   ElementNode,
   FOCUS_COMMAND,
   FORMAT_TEXT_COMMAND,
-  KEY_DOWN_COMMAND,
   Klass,
   LexicalEditor,
   LexicalNode,
@@ -49,7 +48,6 @@ import {
   UnrecognizedMarkdownConstructError,
   importMarkdownToLexical
 } from '../../importMarkdownToLexical'
-import { controlOrMeta } from '../../utils/detectMac'
 import { noop } from '../../utils/fp'
 import type { JsxComponentDescriptor } from '../jsx'
 import { GenericHTMLNode } from './GenericHTMLNode'
@@ -116,6 +114,12 @@ export const activeEditor$ = Cell<LexicalEditor | null>(null)
  * @group Core
  */
 export const contentEditableClassName$ = Cell('')
+
+/**
+ * Holds the spellcheck value of the content editable element.
+ * @group Core
+ */
+export const spellCheck$ = Cell(true)
 
 /**
  * Holds the readOnly state of the editor.
@@ -284,6 +288,12 @@ export const codeBlockEditorDescriptors$ = Cell<CodeBlockEditorDescriptor[]>([])
  * @group Core
  */
 export const editorRootElementRef$ = Cell<React.RefObject<HTMLDivElement> | null>(null)
+
+/**
+ * A reference to the content editable element.
+ * @group Core
+ */
+export const contentEditableRef$ = Cell<React.RefObject<HTMLDivElement> | null>(null)
 
 /**
  * Registers a lexical node to be used in the editor.
@@ -546,7 +556,9 @@ export const createRootEditorSubscription$ = Appender(rootEditorSubscriptions$, 
         },
         COMMAND_PRIORITY_CRITICAL
       )
-    },
+    }
+
+    /*
     // Fixes select all when frontmatter is present
     (rootEditor) => {
       return rootEditor.registerCommand<KeyboardEvent>(
@@ -579,7 +591,7 @@ export const createRootEditorSubscription$ = Appender(rootEditorSubscriptions$, 
         },
         COMMAND_PRIORITY_CRITICAL
       )
-    }
+    }*/
   ])
 })
 
@@ -843,10 +855,13 @@ export const translation$ = Cell<Translation>(() => {
   throw new Error('No translation function provided')
 })
 
+export const lexicalTheme$ = Cell<EditorThemeClasses>(lexicalTheme)
+
 /** @internal */
 export const corePlugin = realmPlugin<{
   initialMarkdown: string
   contentEditableClassName: string
+  spellCheck: boolean
   placeholder?: React.ReactNode
   autoFocus: boolean | { defaultSelection?: 'rootStart' | 'rootEnd'; preventScroll?: boolean | undefined }
   onChange: (markdown: string) => void
@@ -857,13 +872,17 @@ export const corePlugin = realmPlugin<{
   iconComponentFor: (name: IconKey) => React.ReactElement
   suppressHtmlProcessing?: boolean
   translation: Translation
+  trim?: boolean
+  lexicalTheme?: EditorThemeClasses
 }>({
   init(r, params) {
+    const initialMarkdown = params?.initialMarkdown ?? ''
+
     r.register(createRootEditorSubscription$)
     r.register(createActiveEditorSubscription$)
     r.register(markdownSignal$)
     r.pubIn({
-      [initialMarkdown$]: params?.initialMarkdown.trim(),
+      [initialMarkdown$]: params?.trim ? initialMarkdown.trim() : initialMarkdown,
       [iconComponentFor$]: params?.iconComponentFor,
       [addImportVisitor$]: [MdastRootVisitor, MdastParagraphVisitor, MdastTextVisitor, MdastBreakVisitor, ...formattingVisitors],
       [addLexicalNode$]: [ParagraphNode, TextNode, GenericHTMLNode],
@@ -877,6 +896,7 @@ export const corePlugin = realmPlugin<{
 
       [addComposerChild$]: SharedHistoryPlugin,
       [contentEditableClassName$]: params?.contentEditableClassName,
+      [spellCheck$]: params?.spellCheck,
       [toMarkdownOptions$]: params?.toMarkdownOptions,
       [autoFocus$]: params?.autoFocus,
       [placeholder$]: params?.placeholder,
@@ -884,7 +904,8 @@ export const corePlugin = realmPlugin<{
       [translation$]: params?.translation,
       [addMdastExtension$]: gfmStrikethroughFromMarkdown(),
       [addSyntaxExtension$]: gfmStrikethrough(),
-      [addToMarkdownExtension$]: [mdxJsxToMarkdown(), gfmStrikethroughToMarkdown()]
+      [addToMarkdownExtension$]: [mdxJsxToMarkdown(), gfmStrikethroughToMarkdown()],
+      [lexicalTheme$]: params?.lexicalTheme ?? lexicalTheme
     })
 
     r.singletonSub(markdownErrorSignal$, params?.onError)
@@ -909,7 +930,7 @@ export const corePlugin = realmPlugin<{
       onError: (error) => {
         throw error
       },
-      theme: lexicalTheme
+      theme: r.getValue(lexicalTheme$)
     })
 
     newEditor.update(() => {
@@ -940,6 +961,7 @@ export const corePlugin = realmPlugin<{
   update(realm, params) {
     realm.pubIn({
       [contentEditableClassName$]: params?.contentEditableClassName,
+      [spellCheck$]: params?.spellCheck,
       [toMarkdownOptions$]: params?.toMarkdownOptions,
       [autoFocus$]: params?.autoFocus,
       [placeholder$]: params?.placeholder,

@@ -5,6 +5,7 @@ import {
   Translation,
   composerChildren$,
   contentEditableClassName$,
+  spellCheck$,
   corePlugin,
   editorRootElementRef$,
   editorWrappers$,
@@ -17,6 +18,7 @@ import {
   topAreaChildren$,
   useTranslation,
   viewMode$,
+  contentEditableRef$,
   bottomAreaChildren$
 } from './plugins/core'
 
@@ -29,7 +31,7 @@ import { lexicalTheme } from './styles/lexicalTheme'
 import styles from './styles/ui.module.css'
 import { noop } from './utils/fp'
 import { createLexicalComposerContext, LexicalComposerContext, LexicalComposerContextType } from '@lexical/react/LexicalComposerContext'
-import { LexicalEditor } from 'lexical'
+import { EditorThemeClasses, LexicalEditor } from 'lexical'
 import { IconKey, defaultSvgIcons } from './defaultSvgIcons'
 
 const LexicalProvider: React.FC<{
@@ -45,8 +47,14 @@ const LexicalProvider: React.FC<{
 
 const RichTextEditor: React.FC = () => {
   const t = useTranslation()
-  const [contentEditableClassName, composerChildren, topAreaChildren, editorWrappers, placeholder, bottomAreaChildren] = useCellValues(
+  const setContentEditableRef = usePublisher(contentEditableRef$)
+  const onRef = (_contentEditableRef: HTMLDivElement) => {
+    setContentEditableRef({ current: _contentEditableRef })
+  }
+
+  const [contentEditableClassName, spellCheck, composerChildren, topAreaChildren, editorWrappers, placeholder, bottomAreaChildren] = useCellValues(
     contentEditableClassName$,
+    spellCheck$,
     composerChildren$,
     topAreaChildren$,
     editorWrappers$,
@@ -62,10 +70,13 @@ const RichTextEditor: React.FC = () => {
         <div className={classNames(styles.rootContentEditableWrapper, 'mdxeditor-root-contenteditable')}>
           <RichTextPlugin
             contentEditable={
-              <ContentEditable
-                className={classNames(styles.contentEditable, contentEditableClassName)}
-                ariaLabel={t('contentArea.editableMarkdown', 'editable markdown')}
-              />
+              <div ref={onRef}>
+                <ContentEditable
+                  className={classNames(styles.contentEditable, contentEditableClassName)}
+                  ariaLabel={t('contentArea.editableMarkdown', 'editable markdown')}
+                  spellCheck={spellCheck}
+                />
+              </div>
             }
             placeholder={
               <div className={classNames(styles.contentEditable, styles.placeholder, contentEditableClassName)}>
@@ -228,6 +239,11 @@ export interface MDXEditorProps {
    */
   contentEditableClassName?: string
   /**
+   * Controls the spellCheck value for the content editable element of the eitor.
+   * Defaults to true, use false to disable spell checking.
+   */
+  spellCheck?: boolean
+  /**
    * The markdown to edit. Notice that this is read only when the component is mounted.
    * To change the component content dynamically, use the `MDXEditorMethods.setMarkdown` method.
    */
@@ -284,6 +300,15 @@ export interface MDXEditorProps {
    * Pass your own translation function if you want to localize the editor.
    */
   translation?: Translation
+  /**
+   * Whether to apply trim() to the initial markdown input (default: true)
+   */
+  trim?: boolean
+
+  /**
+   * A custom lexical theme to use for the editor.
+   */
+  lexicalTheme?: EditorThemeClasses
 }
 
 /**
@@ -296,6 +321,7 @@ export const MDXEditor = React.forwardRef<MDXEditorMethods, MDXEditorProps>((pro
       plugins={[
         corePlugin({
           contentEditableClassName: props.contentEditableClassName ?? '',
+          spellCheck: props.spellCheck ?? true,
           initialMarkdown: props.markdown,
           onChange: props.onChange ?? noop,
           onBlur: props.onBlur ?? noop,
@@ -306,7 +332,9 @@ export const MDXEditor = React.forwardRef<MDXEditorMethods, MDXEditorProps>((pro
           iconComponentFor: props.iconComponentFor ?? defaultIconComponentFor,
           suppressHtmlProcessing: props.suppressHtmlProcessing ?? false,
           onError: props.onError ?? noop,
-          translation: props.translation ?? defaultTranslation
+          translation: props.translation ?? defaultTranslation,
+          trim: props.trim ?? true,
+          lexicalTheme: props.lexicalTheme
         }),
         ...(props.plugins ?? [])
       ]}

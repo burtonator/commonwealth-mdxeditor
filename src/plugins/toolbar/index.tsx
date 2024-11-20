@@ -9,6 +9,7 @@ import { Root } from './primitives/toolbar'
  * @group Toolbar
  */
 export const toolbarContents$ = Cell<() => React.ReactNode>(() => null)
+export const toolbarClassName$ = Cell<string>('')
 
 const DEFAULT_TOOLBAR_CONTENTS = () => {
   return 'This is an empty toolbar. Pass `{toolbarContents: () => { return <>toolbar components</> }}` to the toolbarPlugin to customize it.'
@@ -37,16 +38,28 @@ export const toolbarPlugin = realmPlugin<ToolbarPluginProps>({
   init(realm, params) {
     realm.pubIn({
       [toolbarContents$]: params?.toolbarContents ?? DEFAULT_TOOLBAR_CONTENTS,
+      [toolbarClassName$]: params?.toolbarClassName ?? '',
       [addTopAreaChild$]: () => {
-        return params?.location === undefined || params.location === 'top' ? <ToolbarBody {...params}/> : null
-      },
+        const [toolbarContents, readOnly, toolbarClassName] = useCellValues(toolbarContents$, readOnly$, toolbarClassName$)
+        return (params?.location === undefined || params.location === 'top') && (
+          <Root className={toolbarClassName} readOnly={readOnly}>
+            {toolbarContents()}
+          </Root>
+        )
+      }
       [addBottomAreaChild$]: () => {
-        return params?.location === 'bottom' ? <ToolbarBody {...params}/> : null
+        const [toolbarContents, readOnly, toolbarClassName] = useCellValues(toolbarContents$, readOnly$, toolbarClassName$)
+        return params.location === 'bottom' && (
+          <Root className={toolbarClassName} readOnly={readOnly}>
+            {toolbarContents()}
+          </Root>
+        )
       }
     })
   },
   update(realm, params) {
     realm.pub(toolbarContents$, params?.toolbarContents ?? DEFAULT_TOOLBAR_CONTENTS)
+    realm.pub(toolbarClassName$, params?.toolbarClassName ?? '')
   }
 })
 

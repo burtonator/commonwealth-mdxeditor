@@ -119,4 +119,5 @@ export * from './RealmWithPlugins'
 
 export * from './FormatConstants'
 
+export * from './styles/lexicalTheme'
 export { ToggleSingleGroupWithItem } from './plugins/toolbar/primitives/toolbar'
