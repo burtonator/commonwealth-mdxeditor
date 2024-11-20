@@ -34,7 +34,7 @@ type ToolbarPluginProps = Readonly<{
  * A plugin that adds a toolbar to the editor.
  * @group Toolbar
  */
-export const toolbarPlugin = realmPlugin<ToolbarPluginProps>({
+export const toolbarPlugin = realmPlugin<{ toolbarContents: () => React.ReactNode; location?: 'top' | 'bottom'; toolbarClassName?: string ; style?: React.CSSProperties}>({
   init(realm, params) {
     realm.pubIn({
       [toolbarContents$]: params?.toolbarContents ?? DEFAULT_TOOLBAR_CONTENTS,
@@ -46,10 +46,10 @@ export const toolbarPlugin = realmPlugin<ToolbarPluginProps>({
             {toolbarContents()}
           </Root>
         )
-      }
+      },
       [addBottomAreaChild$]: () => {
         const [toolbarContents, readOnly, toolbarClassName] = useCellValues(toolbarContents$, readOnly$, toolbarClassName$)
-        return params.location === 'bottom' && (
+        return params?.location === 'bottom' && (
           <Root className={toolbarClassName} readOnly={readOnly}>
             {toolbarContents()}
           </Root>
@@ -62,10 +62,3 @@ export const toolbarPlugin = realmPlugin<ToolbarPluginProps>({
     realm.pub(toolbarClassName$, params?.toolbarClassName ?? '')
   }
 })
-
-type ToolbarBodyProps = Pick<ToolbarPluginProps, 'style'>
-
-const ToolbarBody = (props: ToolbarBodyProps) => {
-  const [toolbarContents, readOnly] = useCellValues(toolbarContents$, readOnly$)
-  return <Root readOnly={readOnly} {...props}>{toolbarContents()}</Root>
-}

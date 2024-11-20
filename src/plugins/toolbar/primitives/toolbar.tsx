@@ -40,7 +40,8 @@ function addTooltipToChildren<C extends React.ComponentType<{ children: React.Re
 type RootProps = Readonly<{
   style?: React.CSSProperties
   readOnly: boolean;
-  children: React.ReactNode
+  children: React.ReactNode,
+  className?: string;
 }>
 
 /**
