@@ -31,6 +31,7 @@ import jsxMarkdown from './assets/jsx.md?raw'
 import tableMarkdown from './assets/table.md?raw'
 
 import { virtuosoSampleSandpackConfig } from './_boilerplate'
+import {mentionsPlugin} from "@/plugins/mention/MentionsPlugin";
 
 const helloMarkdown = `FIXME Hello <u>world am **here**</u> more <u>under</u> line. Some \`code with backticks\` and <code>code tag</code> `
 
@@ -50,6 +51,16 @@ export function Bare() {
     </>
   )
 }
+
+export function Mention() {
+  const ref = React.useRef<MDXEditorMethods>(null!)
+  return (
+    <>
+      <MDXEditor autoFocus={true} ref={ref} markdown={'asdf \n [@Alice](/profile/id/123)'} plugins={[mentionsPlugin()]} onChange={console.log} />
+    </>
+  )
+}
+
 
 export function Code() {
   const ref = React.useRef<MDXEditorMethods>(null)
