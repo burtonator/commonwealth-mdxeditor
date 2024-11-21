@@ -116,19 +116,16 @@ export class MentionNodeAsTextNode extends TextNode {
   __url: string;
 
   static getType(): string {
-    console.log('FIXME: getType');
     return 'mention';
   }
 
   static clone(node: MentionNodeAsTextNode): MentionNodeAsTextNode {
-    console.log('FIXME clone');
     return new MentionNodeAsTextNode(node.__handle, node.__uid, node.__key);
   }
 
   static importJSON(
     serializedNode: SerializedMentionNode,
   ): MentionNodeAsTextNode {
-    console.log('FIXME importJSON');
     const node = $createMentionNode(serializedNode.handle, serializedNode.uid);
     node.setTextContent(serializedNode.text);
     node.setFormat(serializedNode.format);
@@ -140,14 +137,12 @@ export class MentionNodeAsTextNode extends TextNode {
 
   constructor(handle: string, uid: string, key?: NodeKey) {
     super(handle, key);
-    console.log('FIXME new mention node being created.');
     this.__handle = handle;
     this.__uid = uid;
     this.__url = '/profile/id/' + uid;
   }
 
   exportJSON(): SerializedMentionNode {
-    console.log('FIXME exportJSON');
     return {
       ...super.exportJSON(),
       type: 'mention',
@@ -202,7 +197,6 @@ export function $createMentionNode(
   handle: string,
   uid: string,
 ): MentionNodeAsTextNode {
-  console.log('FIXME $createMentionNode', { handle, uid });
   const mentionNode = new MentionNodeAsTextNode(handle, uid);
   return $applyNodeReplacement(mentionNode);
 }
@@ -210,7 +204,6 @@ export function $createMentionNode(
 export function $isMentionNode(
   node: LexicalNode | null | undefined,
 ): node is MentionNodeAsTextNode {
-  console.log('FIXME $isMentionNode');
 
   return node instanceof MentionNodeAsTextNode;
 }

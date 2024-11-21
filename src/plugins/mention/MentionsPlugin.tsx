@@ -313,77 +313,13 @@ export const NewMentionsPlugin = (): JSX.Element | null => {
   );
 };
 
-/**
- * Create an extension for `mdast-util-to-markdown` to enable directives in
- * markdown.
- *
- * @returns {ToMarkdownExtension}
- *   Extension for `mdast-util-to-markdown` to enable directives.
- */
-export function mentionToMarkdown() {
-  console.log('FIXME: mentionToMarkdown');
-  return {
-    // unsafe: [
-    //   {
-    //     character: '\r',
-    //     inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel'],
-    //   },
-    //   {
-    //     character: '\n',
-    //     inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel'],
-    //   },
-    //   {
-    //     before: '[^:]',
-    //     character: ':',
-    //     after: '[A-Za-z]',
-    //     inConstruct: ['phrasing'],
-    //   },
-    //   { atBreak: true, character: ':', after: ':' },
-    // ],
-    // FIXME: I think this is what I might need to fix.
-    handlers: {
-      //   // containerDirective: handleDirective,
-      //   // leafDirective: handleDirective,
-      //   // textDirective: handleDirective
-      containerDirective: () => {
-        console.log('FIXME containerDirective');
-        return 'FIXME';
-      },
-      leafDirective: () => {
-        console.log('FIXME leafDirective');
-        return 'FIXME';
-      },
-      textDirective: () => {
-        console.log('FIXME textDirective');
-        return 'FIXME';
-      },
-    },
-  };
-}
-
 export const mentionsPlugin = realmPlugin<{}>({
-  // update: (realm, params) => {
-  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  //   // realm.pub(directiveDescriptors$, params?.directiveDescriptors ?? [])
-  // },
-  //
-  // // TODO: this has the same methods as the link plugin but I'm not sure how the
-  // // link plugin defines the mentions...
-  // // I *think* I might need these:
-  // //   [addMdastExtension$]: directiveFromMarkdown(),
-  // //   [addSyntaxExtension$]: directive(),
-  //
-  // // TODO: OK, the linkPlugin MUST be used or links can't be parsed so something must be triggering it!!
-  // // OK... one debug strategy is to make the mention plugin work just like the
-  // // link plugin and then make whatever changes are required to get it to work.
-  //
   init: (realm, params) => {
     realm.pubIn({
       [addActivePlugin$]: 'mention',
       [addImportVisitor$]: MentionMdastImportVisitor,
       [addLexicalNode$]: MentionNode,
       [addExportVisitor$]: MentionLexicalExportVisitor,
-      [addToMarkdownExtension$]: mentionToMarkdown(),
       [addComposerChild$]: () => (
         <>
           <NewMentionsPlugin />

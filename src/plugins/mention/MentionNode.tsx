@@ -124,18 +124,15 @@ export class MentionNode extends ElementNode {
   __url: string;
 
   static getType(): string {
-    console.log('FIXME: getType');
     return 'mention';
   }
 
   static clone(node: MentionNode): MentionNode {
-    console.log('FIXME clone');
     return new MentionNode(node.__handle, node.__uid, node.__key);
   }
 
   constructor(handle: string, uid: string, key?: NodeKey) {
     super(key);
-    console.log('FIXME new mention node being created.');
     this.__handle = handle;
     this.__uid = uid;
     this.__url = '/profile/id/' + uid;
@@ -168,7 +165,6 @@ export class MentionNode extends ElementNode {
   }
 
   static importDOM(): DOMConversionMap | null {
-    console.log('FIXME importDOM');
     return {
       a: (domNode: HTMLElement) => {
         if (!domNode.hasAttribute('data-lexical-mention')) {
@@ -182,10 +178,8 @@ export class MentionNode extends ElementNode {
       },
     };
   }
-  // FIXME here ******************************
 
   static importJSON(serializedNode: SerializedMentionNode): MentionNode {
-    console.log('FIXME importJSON');
     const node = $createMentionNode(serializedNode.handle, serializedNode.uid);
     node.setFormat(serializedNode.format);
     node.setIndent(serializedNode.indent);
@@ -194,7 +188,6 @@ export class MentionNode extends ElementNode {
   }
 
   exportJSON(): SerializedMentionNode {
-    console.log('FIXME exportJSON');
     return {
       ...super.exportJSON(),
       type: 'mention',
@@ -208,7 +201,6 @@ export class MentionNode extends ElementNode {
     _: RangeSelection,
     restoreSelection = true,
   ): null | ElementNode {
-    console.log('FIXME: insertNewAfter');
 
     const node = $createMentionNode(this.__handle, this.__uid);
     this.insertAfter(node, restoreSelection);
@@ -216,28 +208,24 @@ export class MentionNode extends ElementNode {
   }
 
   canInsertTextBefore(): boolean {
-    console.log('FIXME: canInsertTextBefore');
     return false;
   }
 
   canInsertTextAfter(): boolean {
-    console.log('FIXME: canInsertTextAfter');
     return false;
   }
   isInline(): boolean {
-    console.log('FIXME: isInline');
     return true;
   }
+
   isSelectable(): boolean {
     return true; // Allow the cursor to select the node
   }
 
   collapseAtStart(): boolean {
-    console.log('FIXME: collapseAtStart');
     return true; // Allow the cursor to move into the node from the left
   }
   canBeEmpty(): boolean {
-    console.log('FIXME: canBeEmpty');
     return false;
   }
 
@@ -246,7 +234,6 @@ export class MentionNode extends ElementNode {
     selection: BaseSelection,
     destination: 'clone' | 'html',
   ): boolean {
-    console.log('FIXME: extractWithChild');
 
     if (!$isRangeSelection(selection)) {
       return false;
@@ -264,7 +251,6 @@ export class MentionNode extends ElementNode {
 }
 
 export function $createMentionNode(handle: string, uid: string): MentionNode {
-  console.log('FIXME $createMentionNode', { handle, uid });
   const mentionNode = new MentionNode(handle, uid);
   return $applyNodeReplacement(mentionNode);
 }
@@ -272,7 +258,6 @@ export function $createMentionNode(handle: string, uid: string): MentionNode {
 export function $isMentionNode(
   node: LexicalNode | null | undefined,
 ): node is MentionNode {
-  console.log('FIXME $isMentionNode');
 
   return node instanceof MentionNode;
 }
